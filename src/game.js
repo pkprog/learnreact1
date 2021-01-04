@@ -64,8 +64,6 @@ class Game extends React.Component {
             status = 'Следующий ходит: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
-        const thisJumpTo = this.jumpTo.bind(this);
-
         return (
             <div className="game">
                 <div className="game-board">
@@ -78,7 +76,7 @@ class Game extends React.Component {
                     <div>{status}</div>
                     <History
                         history = {this.state.history}
-                        jumpTo = {thisJumpTo}
+                        jumpTo = {(move) => this.jumpTo(move)}
                     />
                 </div>
             </div>
