@@ -29,6 +29,7 @@ class History extends React.Component {
                 coord = '(' + step.stepSquare.x + ', ' + step.stepSquare.y + ')';
             }
 
+            const baseClass = "col-6";
             let highlightClass = "";
             if (lastSelected >= 0 && move === lastSelected) {
                 highlightClass = "text-info bg-dark";
@@ -42,7 +43,7 @@ class History extends React.Component {
                             <div className="col-6">
                                 <button onClick={() => this.props.jumpTo(move)}>{dsc}</button>
                             </div>
-                            <div className={[highlightClass].join("col-6")}>
+                            <div className={[baseClass, highlightClass].join(" ")}>
                                 <label>{coord}</label>
                             </div>
                         </div>

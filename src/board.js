@@ -3,9 +3,20 @@ import {Square} from "./square";
 
 class Board extends React.Component {
     renderSquare(cellNumber, x,y) {
+        let winSquare = false;
+        if (this.props.winSquares) {
+            const checked = this.props.winSquares.some((el) => {
+                return el === cellNumber;
+            });
+            if (checked) {
+                winSquare = true;
+            }
+        }
+
         return (<Square
             value = {this.props.squares[cellNumber].i}
             onClick = {() => this.props.onClick(cellNumber, x,y)}
+            win = {winSquare}
         />);
     }
 

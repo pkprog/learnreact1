@@ -10,7 +10,8 @@ class Game extends React.Component {
             history: [
                 {
                     squares: Array(9).fill({i: null, x: null, y: null}),
-                    stepSquare: {i: null, x: null, y: null}
+                    stepSquare: {i: null, x: null, y: null},
+                    winSquares: null
                 }
             ],
             xIsNext: true,
@@ -22,10 +23,13 @@ class Game extends React.Component {
     handleClick(cellNumber, x,y) {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
-        //Копируем всё в ноый массив
+        //Копируем всё в новый массив
         const squares = current.squares.slice();
 
-        if (calculateWinner(squares) || squares[cellNumber].i) {
+        if (squares[cellNumber].i) {
+            return;
+        }
+        if (current.winSquares) {
             return;
         }
 
@@ -34,19 +38,23 @@ class Game extends React.Component {
             x: x,
             y: y
         };
-        this.setState({
+
+        const winResult = calculateWinner(squares);
+        const newState = {...this.state,
             history: history.concat([{
                 squares: squares,
                 stepSquare: {
                     i: cellNumber,
                     x: x,
                     y: y
-                }
+                },
+                winSquares: winResult ? winResult.squares : null
             }]),
             xIsNext: !this.state.xIsNext,
             stepNumber: history.length,
             lastSelected: null
-        });
+        };
+        this.setState(newState);
     }
 
     jumpTo(stepNumber) {
@@ -73,7 +81,7 @@ class Game extends React.Component {
 
         let status;
         if (winner) {
-            status = "Победитель: " + winner;
+            status = "Победитель: " + winner.i;
         } else {
             status = 'Следующий ходит: ' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -83,6 +91,7 @@ class Game extends React.Component {
                 <div className="game-board col-6">
                     <Board
                         squares = {current.squares}
+                        winSquares = {current.winSquares}
                         onClick = {(cellNumber, x,y) => this.handleClick(cellNumber, x,y)}
                     />
                 </div>
@@ -110,10 +119,18 @@ function calculateWinner(squares) {
         [0, 4, 8],
         [2, 4, 6],
     ];
+
+    const winResult = {
+        squares: null,
+        i: null
+    };
+
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a].i && squares[a].i === squares[b].i && squares[a].i === squares[c].i) {
-            return squares[a].i;
+            winResult.squares = [a, b, c];
+            winResult.i = squares[a].i;
+            return winResult;
         }
     }
     return null;
