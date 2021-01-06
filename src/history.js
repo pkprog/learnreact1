@@ -1,9 +1,24 @@
 import React from 'react';
+import { ArrowUpSquare, ArrowDownSquare  } from "react-bootstrap-icons";
 
 class History extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            sortDirection: true //true - по возрастанию
+        }
+    }
+
+    changeSortDirection() {
+        this.setState({
+            sortDirection: !this.state.sortDirection
+        });
+    }
 
     render() {
         const history = this.props.history;
+        const direction = this.state.sortDirection;
         const lastSelected = this.props.lastSelected;
 
         const moves = history.map((step, move) => {
@@ -19,22 +34,59 @@ class History extends React.Component {
                 highlightClass = "text-info bg-dark";
             }
 
-            return (
-                <li key={move}>
-                    <div className="row">
-                        <div className="col-6">
-                            <button onClick={() => this.props.jumpTo(move)}>{dsc}</button>
+            return {
+                move: move,
+                jsx: (
+                    <li key={move}>
+                        <div className="row">
+                            <div className="col-6">
+                                <button onClick={() => this.props.jumpTo(move)}>{dsc}</button>
+                            </div>
+                            <div className={[highlightClass].join("col-6")}>
+                                <label>{coord}</label>
+                            </div>
                         </div>
-                        <div className={[highlightClass].join("col-6")}>
-                            <label>{coord}</label>
-                        </div>
-                    </div>
-                </li>
-            );
+                    </li>
+                )
+            }
         });
 
+        moves.sort((v1, v2) => {
+            if (direction) {
+                return v1.move >= v2.move;
+            } else {
+                return v1.move < v2.move;
+            }
+        })
+
+        const sortedMoves = moves.map((move) => {
+            return move.jsx;
+        })
+
+        function SortButton(props) {
+            if (props.direction) {
+                return (
+                    <button onClick={props.sort} title="По возрастанию" type="button" className="btn btn-secondary">
+                        <ArrowUpSquare/>
+                    </button>
+                );
+            } else {
+                return (
+                    <button onClick={props.sort} title="По убыванию" type="button" className="btn btn-secondary">
+                        <ArrowDownSquare/>
+                    </button>
+                );
+            }
+        }
+
         return (
-            <ol>{moves}</ol>
+            <div>
+                <SortButton
+                    direction = {this.state.sortDirection}
+                    sort = {() => this.changeSortDirection()}
+                />
+                <ul className="list-unstyled">{sortedMoves}</ul>
+            </div>
         );
     }
 
