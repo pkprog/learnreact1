@@ -9,7 +9,7 @@ class Game extends React.Component {
         this.state = {
             history: [
                 {
-                    squares: Array(9).fill({i: null, x: null, y: null}),
+                    squares: Array(MAX_STEPS).fill({i: null, x: null, y: null}),
                     stepSquare: {i: null, x: null, y: null},
                     winSquares: null
                 }
@@ -79,11 +79,13 @@ class Game extends React.Component {
         //     );
         // });
 
-        let status;
+        let gameStatus;
         if (winner) {
-            status = "Победитель: " + winner.i;
+            gameStatus = "Победитель: " + winner.i;
+        } else if (this.state.stepNumber === MAX_STEPS) {
+            gameStatus = "Ничья";
         } else {
-            status = 'Следующий ходит: ' + (this.state.xIsNext ? 'X' : 'O');
+            gameStatus = 'Следующий ходит: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
         return (
@@ -96,7 +98,7 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game-info col-6">
-                    <div>{status}</div>
+                    <div>{gameStatus}</div>
                     <History
                         history = {this.state.history}
                         jumpTo = {(move) => this.jumpTo(move)}
@@ -136,4 +138,6 @@ function calculateWinner(squares) {
     return null;
 }
 
-export { Game };
+const MAX_STEPS = 9;
+
+export { Game, MAX_STEPS };

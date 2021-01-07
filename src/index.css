@@ -52,3 +52,7 @@ ol, ul {
 .win-square {
     text-decoration: line-through;
 }
+
+.sup-num {
+    font-size: 50%;
+}

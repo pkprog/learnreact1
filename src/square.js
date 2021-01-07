@@ -5,7 +5,7 @@ function Square(props) {
     const highlightClass = props.win ? "win-square" : "";
     return (
         <button className={[baseClass, highlightClass].join(" ")} onClick={props.onClick}>
-            {props.value}
+            {props.value}<sup className="sup-num">{props.cellNumber}</sup>
         </button>
     );
 }
